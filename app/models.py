@@ -14,3 +14,16 @@ class Usuarios(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+
+class Productos(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    prod_nombre = db.Column(db.String(100), nullable=False)
+    prod_precio = db.Column(db.Float, nullable=False)
+    prod_descrp = db.Column(db.String(100), nullable=False)
+    prod_ivapro = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return f'<Product {self.name}>'
+
+
