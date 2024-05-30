@@ -102,4 +102,12 @@ def editar_producto(id):
         return redirect(url_for('home.html'))
     return render_template('editar_producto.html', productos=productos)
 
+"""Eliminar"""
+@app.route('/eliminar_producto<int:id>', methods=['POST'])
+def eliminar_producto(id):
+    productos = Productos.query.get_or_404(id)
+    db.session.delete(productos)
+    db.session.commit()
+    flash('Producto eliminado correctamnente')
+    return redirect(url_for('home'))
 
