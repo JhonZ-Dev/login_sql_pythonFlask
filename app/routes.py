@@ -1,10 +1,10 @@
-from flask import render_template, request, redirect, url_for, flash
+from functools import wraps
+from flask import render_template, request, redirect, url_for, flash, session
 from app import app, db
 from app.models import Usuarios
+from app.decorators import login_required
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -15,16 +15,18 @@ def login():
         if user is None or not user.check_password(password):
             flash('Usuario o contraseña inválidos')
             return redirect(url_for('login'))
+        session['user_id'] = user.id
         flash('¡Inicio de sesión exitoso para {}!'.format(username))
         print("exitoso")
         return redirect(url_for('home'))
     return render_template('login.html')
 
 @app.route('/home')
+@login_required
 def home():
     return render_template('home.html')
 
-@app.route('/registro', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def registro():
     if request.method == 'POST':
         username = request.form['username']
@@ -42,3 +44,18 @@ def registro():
         flash('¡Usuario creado exitosamente! Por favor, inicia sesión.')
         return redirect(url_for('login'))
     return render_template('registro.html')
+
+
+
+@app.route('/index')
+@login_required
+def index():
+    return render_template('index.html')
+
+"""Cerrar sesion"""
+@app.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    session.pop('user_id', None)
+    flash('Has cerrado sesión exitosamente.')
+    return redirect(url_for('index'))

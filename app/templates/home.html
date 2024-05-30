@@ -7,5 +7,9 @@
 <body>
     <h2>Welcome Home!</h2>
    
+
+    <form action="{{ url_for('logout') }}" method="post">
+        <input type="submit" value="Cerrar sesión">
+    </form>
 </body>
 </html>
