@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import render_template, request, redirect, url_for, flash, session
 from app import app, db
-from app.models import Usuarios
+from app.models import Usuarios, Productos
 from app.decorators import login_required
 
 
@@ -21,10 +21,7 @@ def login():
         return redirect(url_for('home'))
     return render_template('login.html')
 
-@app.route('/home')
-@login_required
-def home():
-    return render_template('home.html')
+
 
 @app.route('/', methods=['GET', 'POST'])
 def registro():
@@ -59,3 +56,50 @@ def logout():
     session.pop('user_id', None)
     flash('Has cerrado sesión exitosamente.')
     return redirect(url_for('index'))
+
+"""---------------------------------CRUD PRODUCTOS--------------------------"""
+
+@app.route('/agregar-producto', methods=['GET', 'POST'])
+@login_required
+def agregar_producto():
+    if request.method ==  'POST':
+        prod_nombre = request.form['prod_nombre']
+        prod_precio = request.form['prod_precio']
+        prod_descrp = request.form['prod_descrp']
+        prod_ivapro = request.form['prod_ivapro']
+        new_producto = Productos(prod_nombre=prod_nombre,   
+                                 prod_precio = prod_precio,
+                                prod_descrp = prod_descrp,
+                                prod_ivapro = prod_ivapro)
+        db.session.add(new_producto)
+        db.session.commit()
+        flash('Producto agregado correctamente')
+        return redirect(url_for('home'))
+    return render_template('agregar_producto.html')
+
+
+"""Listar"""
+@app.route('/home')
+@login_required
+def home():
+    productos = Productos.query.all()
+    return render_template('home.html', productos=productos)
+
+
+"""EDITAR"""
+@app.route('/editar_producto/<int:id>', methods=['GET', 'POST'])
+@login_required
+def editar_producto(id):
+    """obtener el id de un objeto"""
+    productos = Productos.query.get_or_404(id)
+    if request.method ==  'POST':
+        productos.prod_nombre = request.form['prod_nombre']
+        productos.prod_precio = request.form['prod_precio']
+        productos.prod_descrp = request.form['prod_descrp']
+        productos.prod_ivapro = request.form['prod_ivapro']
+        db.session.commit()
+        flash('Producto actualizado correctamente')
+        return redirect(url_for('home.html'))
+    return render_template('editar_producto.html', productos=productos)
+
+

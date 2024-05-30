@@ -11,5 +11,33 @@
     <form action="{{ url_for('logout') }}" method="post">
         <input type="submit" value="Cerrar sesión">
     </form>
+
+
+<h1>Products</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in productos %}
+        <tr>
+            <td>{{ product.prod_nombre }}</td>
+            <td>{{ product.prod_precio }}</td>
+            <td>{{ product.prod_descrp }}</td>
+            <td>
+                <a href="{{ url_for('editar_producto', id=product.id) }}">Edit</a>
+               
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
 </body>
 </html>

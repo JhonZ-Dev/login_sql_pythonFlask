@@ -21,7 +21,7 @@ class Productos(db.Model):
     prod_nombre = db.Column(db.String(100), nullable=False)
     prod_precio = db.Column(db.Float, nullable=False)
     prod_descrp = db.Column(db.String(100), nullable=False)
-    prod_ivapro = db.Column(db.String(100), nullable=False)
+    prod_ivapro = db.Column(db.Float, nullable=False)
 
     def __repr__(self):
         return f'<Product {self.name}>'
