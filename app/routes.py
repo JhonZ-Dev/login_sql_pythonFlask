@@ -49,6 +49,11 @@ def registro():
 def index():
     return render_template('index.html')
 
+
+@app.route('/base')
+@login_required
+def base():
+    return render_template('base.html')
 """Cerrar sesion"""
 @app.route('/logout', methods=['POST'])
 @login_required
