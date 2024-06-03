@@ -3,6 +3,7 @@ from flask import render_template, request, redirect, url_for, flash, session
 from app import app, db
 from app.models import Usuarios, Productos
 from app.decorators import login_required
+from math import ceil
 
 
 
@@ -84,12 +85,24 @@ def agregar_producto():
 
 
 """Listar"""
-@app.route('/home')
+""" @app.route('/home')
 @login_required
 def home():
     productos = Productos.query.all()
-    return render_template('home.html', productos=productos)
+    return render_template('home.html', productos=productos) """
 
+@app.route('/home')
+@login_required
+def home():
+    page = request.args.get('page', 1, type=int)
+    per_page = 10  # Número de productos por página
+
+    # Agrega una cláusula ORDER BY para garantizar un orden definido
+    productos = Productos.query.order_by(Productos.id).paginate(page=page, per_page=per_page)
+    total_products = Productos.query.count()
+    total_pages = ceil(total_products / per_page)
+
+    return render_template('home.html', productos=productos, page=page, total_pages=total_pages)
 
 """EDITAR"""
 @app.route('/editar_producto/<int:id>', methods=['GET', 'POST'])
